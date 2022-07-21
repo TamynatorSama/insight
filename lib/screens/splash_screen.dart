@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // var theme = set!.get("settings");
     // var themeMode = jsonDecode(set!.getString("settings")!);
 
-    var theme = SettingsModel.fromJson(set!.get("settings").toString());
+    var theme = SettingsModel.fromJson(jsonDecode(set!.get("settings").toString()));
     // ignore: use_build_context_synchronously
     Provider.of<SettingsHandler>(context, listen: false).setThemeMode(theme);
   }
