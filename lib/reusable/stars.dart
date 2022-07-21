@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insight1/logic/settings_handler.dart';
+import 'package:provider/provider.dart';
 
 class Star extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -8,14 +9,15 @@ class Star extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    var themeMode = Provider.of<SettingsHandler>(context).mode;
     int num1 = ((starts / 10) * 5).floor();
-    var settings = SettingsHandler();
 
     Widget _ratingStar(int rate) {
       var start = <Widget>[];
       for (var i = 1; i <= 5; i++) {
         var color =
-            i <= rate ? settings.accentColor : Colors.white.withOpacity(0.8);
+            i <= rate ? themeMode.accentColor : Colors.white.withOpacity(0.8);
         var stat = Icon(
           i <= rate ? Icons.star : Icons.star_border,
           color: color,

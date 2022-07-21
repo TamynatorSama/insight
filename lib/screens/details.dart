@@ -27,8 +27,14 @@ import 'package:http/http.dart' as http;
 
 class Details extends StatefulWidget {
   final int id;
+  final Color color;
+  final Color background;
+  final Color fontColor;
   const Details({
     Key? key,
+    required this.fontColor,
+    required this.color,
+    required this.background,
     required this.id,
   }) : super(key: key);
 
@@ -81,7 +87,7 @@ class _DetailsState extends State<Details> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: const Color(0xff303030),
+        backgroundColor: widget.background,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -99,7 +105,6 @@ class _DetailsState extends State<Details> {
                               height: MediaQuery.of(context).size.height * 0.55,
                               width: double.maxFinite,
                               decoration: BoxDecoration(
-                                color: Colors.black,
                                 image: DecorationImage(
                                     image: CachedNetworkImageProvider(
                                         "https://image.tmdb.org/t/p/w500/${list.posterPath}"),
@@ -114,7 +119,7 @@ class _DetailsState extends State<Details> {
                                             color: Color(0xff303030))),
                                     gradient: LinearGradient(
                                         colors: [
-                                          Colors.black.withOpacity(0.1),
+                                          widget.background.withOpacity(0.1),
                                           const Color(0xff303030)
                                         ],
                                         begin: Alignment.topCenter,
@@ -134,93 +139,106 @@ class _DetailsState extends State<Details> {
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold),
                                         )),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Rate(
-                                            text:
-                                                "${(int.parse(list.runtime) ~/ 60)}hr ${int.parse(list.runtime) % 60}min",
-                                            data: Icons.timer_sharp),
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          width: 1,
-                                          height: 30,
-                                          color: Colors.white,
-                                        ),
-                                        list.rating.length > 1
-                                            ? Row(
-                                                textBaseline:
-                                                    TextBaseline.alphabetic,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 5.0),
-                                                      child: Icon(
-                                                        Icons.star,
-                                                        color: settings
-                                                            .accentColor,
-                                                        size: 20,
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom:10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          ChangeNotifierProvider(
+                                            create: (context) =>
+                                                SettingsHandler(),
+                                            child: Rate(
+                                                useColor: widget.color,
+                                                text:list.runtime.contains(",") ? "${(int.parse(list.runtime.split(",")[0].replaceAll("[", "")) ~/ 60) == 0 ? "":"${int.parse(list.runtime.split(",")[0].replaceAll("[", "")) ~/ 60}hr"} ${int.parse(list.runtime.split(",")[0].replaceAll("[", "")) % 60}min":
+                                        "${(int.parse(list.runtime.replaceAll("[", "").replaceAll("]", "")) ~/ 60)==0? "":"${(int.parse(list.runtime.replaceAll("[", "").replaceAll("]", "")) ~/ 60)}"}}${int.parse(list.runtime.replaceAll("[", "").replaceAll("]", "")) % 60}min",
+                                                data: Icons.timer_sharp),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            width: 1,
+                                            height: 30,
+                                            color: Colors.white,
+                                          ),
+                                          list.rating.length > 1
+                                              ? Row(
+                                                  textBaseline:
+                                                      TextBaseline.alphabetic,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                right: 5.0),
+                                                        child: Icon(
+                                                          Icons.star,
+                                                          color: widget.color,
+                                                          size: 20,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      // "7.",
-                                                      list.rating[0] +
-                                                          list.rating[1],
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 17),
-                                                    ),
-                                                    Text(
-                                                        // "9",
-                                                        list.rating[2],
+                                                      Text(
+                                                        // "7.",
+                                                        list.rating[0] +
+                                                            list.rating[1],
                                                         style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 15,
-                                                        )),
-                                                  ])
-                                            : Row(
-                                                textBaseline:
-                                                    TextBaseline.alphabetic,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 5.0),
-                                                      child: Icon(
-                                                        Icons.star,
-                                                        color: settings
-                                                            .accentColor,
-                                                        size: 20,
+                                                            color:
+                                                                Colors.white,
+                                                            fontSize: 17),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      // "7.",
-                                                      list.rating[0],
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 17),
-                                                    )
-                                                  ]),
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          width: 1,
-                                          height: 30,
-                                          color: Colors.white,
-                                        ),
-                                        Rate(
-                                            text: list.releasedate,
-                                            data: Icons.calendar_today)
-                                      ],
+                                                      Text(
+                                                          // "9",
+                                                          list.rating[2],
+                                                          style: const TextStyle(
+                                                            color:
+                                                                Colors.white,
+                                                            fontSize: 15,
+                                                          )),
+                                                    ])
+                                              : Row(
+                                                  textBaseline:
+                                                      TextBaseline.alphabetic,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                right: 5.0),
+                                                        child: Icon(
+                                                          Icons.star,
+                                                          color: widget.color,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        // "7.",
+                                                        list.rating[0],
+                                                        style: TextStyle(
+                                                            color:
+                                                                widget.fontColor,
+                                                            fontSize: 17),
+                                                      )
+                                                    ]),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            width: 1,
+                                            height: 30,
+                                            color: Colors.white,
+                                          ),
+                                          ChangeNotifierProvider(
+                                              create: (context) =>
+                                                  SettingsHandler(),
+                                              child: Rate(
+                                                  useColor: widget.color,
+                                                  text: list.releasedate,
+                                                  data: Icons.calendar_today))
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -237,8 +255,14 @@ class _DetailsState extends State<Details> {
                                   child: Row(
                                     children: List.generate(
                                         list.genres.length,
-                                        (index) => Genre(
-                                            genre: list.genres[index].name)),
+                                        (index) => ChangeNotifierProvider(
+                                            create: (context) =>
+                                                SettingsHandler(),
+                                            child: Genre(
+                                              font: widget.fontColor,
+                                                color: widget.color,
+                                                genre:
+                                                    list.genres[index].name))),
                                   ),
                                 ),
                                 const SizedBox(
@@ -247,8 +271,7 @@ class _DetailsState extends State<Details> {
                                 Text(
                                   list.overview,
                                   style: TextStyle(
-                                      color: Colors.white.withOpacity(0.75),
-                                      fontSize: 15),
+                                      color: widget.fontColor, fontSize: 16),
                                 ),
                                 const SizedBox(
                                   height: 30,
@@ -256,12 +279,12 @@ class _DetailsState extends State<Details> {
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   margin: const EdgeInsets.only(bottom: 10),
-                                  child: const Text(
+                                  child: Text(
                                     "Videos",
                                     style: TextStyle(
                                         fontSize: 32,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.white),
+                                        color: widget.fontColor),
                                   ),
                                 ),
                                 FutureBuilder(
@@ -292,6 +315,7 @@ class _DetailsState extends State<Details> {
                                                                   )));
                                                     },
                                                     child: VideoCard(
+                                                      font: widget.fontColor,
                                                       image: trailers[index]
                                                           .imagePath,
                                                       title:
@@ -300,7 +324,8 @@ class _DetailsState extends State<Details> {
                                           ),
                                         );
                                       } else {
-                                        return const TextPlace(
+                                        return TextPlace(
+                                            color: widget.color,
                                             text: "Getting Videos");
                                       }
                                     }),
@@ -328,9 +353,9 @@ class _DetailsState extends State<Details> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back_ios_new,
-                        color: Color.fromARGB(255, 215, 215, 215),
+                        color: widget.fontColor,
                       ),
                       onTap: () {
                         Navigator.pop(context);
@@ -370,7 +395,6 @@ class _DetailsState extends State<Details> {
                               genres: watchliststring,
                               title: watchlist!.title);
 
-
                           var stringed = json.encode(watch);
 
                           if (sharedList.contains(stringed)) {
@@ -384,7 +408,7 @@ class _DetailsState extends State<Details> {
 
                               var file = File(
                                   "${externalDir[0].path}${watchlist!.posterPath}");
-                                  
+
                               file.writeAsBytesSync(response.bodyBytes);
 
                               showSnack(context, "Added to watchlist");
@@ -403,28 +427,27 @@ class _DetailsState extends State<Details> {
                         padding: const EdgeInsets.all(6.0),
                         child: Icon(
                           Icons.playlist_add,
-                          color: SettingsHandler().accentColor,
+                          color: widget.color,
                         ),
                       ),
                     )
                   ],
                 )),
           ],
-        )
-        );
+        ));
   }
 }
-
-storeWatch() {}
 
 class Rate extends StatelessWidget {
   final String text;
   final IconData data;
-  const Rate({
-    Key? key,
-    required this.text,
-    required this.data,
-  }) : super(key: key);
+  final Color useColor;
+  const Rate(
+      {Key? key,
+      required this.text,
+      required this.data,
+      required this.useColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -435,7 +458,7 @@ class Rate extends StatelessWidget {
           Icon(
             data,
             size: 20,
-            color: SettingsHandler().accentColor,
+            color: useColor,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),

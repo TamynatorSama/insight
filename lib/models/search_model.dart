@@ -1,12 +1,12 @@
 class SearchModel {
-  final String imdbid;
+  final int id;
   final String image;
   final String title;
   final String type;
-  SearchModel({required this.imdbid,required this.image, required this.title, required this.type});
+  SearchModel({required this.id,required this.image, required this.title, required this.type});
 
   factory SearchModel.fromJson(Map<String, dynamic> json) {
     return SearchModel(
-        imdbid: json["imdbid"] ,image: json["poster"], title: json["title"], type: json["type"]);
+        id: json["id"] ,image: json["poster_path"].toString(), title: json["title"].toString(), type: json["media_type"]);
   }
 }

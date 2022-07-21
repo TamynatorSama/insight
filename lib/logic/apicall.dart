@@ -7,6 +7,7 @@ import 'package:insight1/models/quiz_model.dart';
 import 'package:insight1/models/search_model.dart';
 import 'package:insight1/models/sereis_details_model.dart';
 import 'package:insight1/models/series.dart';
+import 'package:insight1/models/series_episodes.dart';
 import 'package:insight1/models/tailermodel.dart';
 import 'package:insight1/models/videomodel.dart';
 
@@ -44,10 +45,10 @@ class HttpReq {
   }
 
 // tamyantor = k_d017257x
-//colesage = k_q80noplr =using
-// akinyemi = k_5z14diqt = used
+//colesage = k_q80noplr =used
+// akinyemi = k_5z14diqt =using
   Future<VideoModel> getVideoLink(String videoId) async {
-    var url = Uri.parse("https://imdb-api.com/API/YouTube/k_q80noplr/$videoId");
+    var url = Uri.parse("https://imdb-api.com/API/YouTube/k_5z14diqt/$videoId");
     var response = await http.get(url);
     var result = jsonDecode(response.body);
     var list = VideoModel.fromJson(result);
@@ -63,16 +64,6 @@ class HttpReq {
     var result = jsonDecode(response.body);
     var trends = result["results"];
     return trends;
-  }
-
-  // upcoming api call
-  Future<List> getUpcoming() async {
-    var url = Uri.parse(
-        "https://api.themoviedb.org/3/movie/upcoming?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
-    var response = await http.get(url);
-    var result = jsonDecode(response.body);
-    var upcoming = result["results"];
-    return upcoming;
   }
 
   //series api call
@@ -116,33 +107,15 @@ class HttpReq {
     }
   }
 
-  Future<List<SeriesModel>> getSeriesRecomended(int id) async {
-    var url = Uri.parse(
-        "https://api.themoviedb.org/3/tv/$id/similar?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
-    try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        var result = jsonDecode(response.body);
-        var parsable = result["results"] as List;
-        var parsed = parsable.map<SeriesModel>((e) => SeriesModel.fromJson(e)).toList();
-        return parsed;
-      } else {
-        throw "api error";
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   //search api call
 
   Future<List<SearchModel>> search(String query) async {
     var url = Uri.parse(
-        "http://thubbackend.herokuapp.com/search/?searchparams=$query");
+        "https://api.themoviedb.org/3/search/multi?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&query=$query&page=1&include_adult=true");
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
-      var search = result as List;
+      var search = result["results"] as List;
       var list =
           search.map<SearchModel>((e) => SearchModel.fromJson(e)).toList();
       return list;
@@ -186,6 +159,27 @@ class HttpReq {
       }
     } catch (e) {
       throw "erroe";
+    }
+  }
+
+  //getting the list of series episode each season per click
+  Future<List<SeriesEpisodeModel>> getEpisodes(int id, int seasonNum) async {
+    var url =
+        "https://api.themoviedb.org/3/tv/$id/season/$seasonNum?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US";
+    try {
+      var response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body);
+        var owk = result["episodes"] as List;
+        var list = owk
+            .map<SeriesEpisodeModel>((e) => SeriesEpisodeModel.fromJson(e))
+            .toList();
+        return list;
+      } else {
+        throw 'error';
+      }
+    } catch (e) {
+      throw "$e";
     }
   }
 }

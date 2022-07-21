@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class TextPlace extends StatefulWidget {
   final String text;
-  const TextPlace({Key? key, required this.text}) : super(key: key);
+  final Color color;
+  const TextPlace({Key? key, required this.color,required this.text}) : super(key: key);
 
   @override
   State<TextPlace> createState() => _TextPlaceState();
@@ -36,8 +37,9 @@ class _TextPlaceState extends State<TextPlace>
       opacity: controller!.value,
       child: Text(
         widget.text,
-        style: const TextStyle(
-            color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: widget.color, fontSize: 20, fontWeight: FontWeight.w600),
       ),
     );
   }

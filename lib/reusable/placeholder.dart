@@ -12,7 +12,7 @@ class ContentPlaceHolder extends StatelessWidget {
     return Shimmer.fromColors(
       period: const Duration(seconds: 2),
         baseColor: Colors.grey.withOpacity(0.5),
-        highlightColor: Colors.grey.withOpacity(1),
+        highlightColor: Colors.white.withOpacity(0.4),
         child: Container(
           width: width,
           height: height,

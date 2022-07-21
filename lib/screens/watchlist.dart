@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:insight1/logic/settings_handler.dart';
 import 'package:insight1/models/watch_list.dart';
 import 'package:insight1/reusable/text_placeholder.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WatchlistScreen extends StatefulWidget {
@@ -35,6 +37,10 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    
+    var themeMode = Provider.of<SettingsHandler>(context).mode;
+  
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child:useList.isNotEmpty
@@ -71,8 +77,9 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
               );
             },
           )
-        : const Center(
+        : Center(
             child: TextPlace(
+              color: themeMode.fontColor,
               text: "your watchlist is empty",
             ),
         )

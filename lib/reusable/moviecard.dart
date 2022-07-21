@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:insight1/logic/settings_handler.dart';
 import 'package:insight1/reusable/stars.dart';
+import 'package:provider/provider.dart';
 
 class MovieCard extends StatelessWidget {
   final String poster;
@@ -13,6 +15,7 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeMode = Provider.of<SettingsHandler>(context).mode;
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),
       child: Column(
@@ -46,8 +49,8 @@ class MovieCard extends StatelessWidget {
                 child: Text(
                   title,
                   overflow: TextOverflow.clip,
-                  style: const TextStyle(
-                      color: Colors.white,
+                  style: TextStyle(
+                      color: themeMode.fontColor,
                       fontSize: 15,
                       fontWeight: FontWeight.w600),
                 ),
