@@ -20,11 +20,14 @@ class SettingsModel {
         accentColor: json["accentColor"],
         background: json["background"],
         fontColor: json["fontColor"],
-        fontFamilyUse: json["fontFamilyUse"]);
+        fontFamilyUse: json["fontFamilyUse"]
+        );
   }
   Map<String, dynamic> tojson() => {
+    "addedColor": addedColor,
         "accentColor": accentColor,
         "background": background,
+        "fontColor": fontColor,
         "fontFamilyUse": fontFamilyUse
       };
 }

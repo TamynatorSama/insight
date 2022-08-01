@@ -10,6 +10,7 @@ import 'package:insight1/models/series.dart';
 import 'package:insight1/models/series_episodes.dart';
 import 'package:insight1/models/tailermodel.dart';
 import 'package:insight1/models/videomodel.dart';
+import "package:insight1/logic/keys.dart";
 
 class HttpReq {
   HttpReq._();
@@ -17,7 +18,7 @@ class HttpReq {
   // this function is to get the list for images in the slide show
   Future<List> getCarousel() async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/movie/now_playing?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
+        "$apiEndPoint/movie/now_playing?api_key=$apiKey&language=en-US&page=1");
     try {
       var response = await http.get(url);
       var result = jsonDecode(response.body);
@@ -31,7 +32,7 @@ class HttpReq {
 // the thre  next functions are to get the video and details of the movie
   Future<List<TrailerModel>> videoDetail(int id) async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/movie/$id/videos?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US");
+        "$apiEndPoint/movie/$id/videos?api_key=$apiKey&language=en-US");
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body);
@@ -59,7 +60,7 @@ class HttpReq {
 
   Future<List> getTreanding() async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/movie/popular?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
+        "$apiEndPoint/movie/popular?api_key=$apiKey&language=en-US&page=1");
     var response = await http.get(url);
     var result = jsonDecode(response.body);
     var trends = result["results"];
@@ -69,7 +70,7 @@ class HttpReq {
   //series api call
   Future<List<SeriesModel>> seriesPopular() async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/tv/popular?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
+        "$apiEndPoint/tv/popular?api_key=$apiKey&language=en-US&page=1");
     var response = await http.get(url);
     var result = jsonDecode(response.body);
     var popularseries = result["results"] as List;
@@ -81,7 +82,7 @@ class HttpReq {
 
   Future<List<SeriesModel>> playingSeries() async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/tv/airing_today?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&page=1");
+        "$apiEndPoint/tv/airing_today?api_key=$apiKey&language=en-US&page=1");
     var response = await http.get(url);
     var result = jsonDecode(response.body);
     var playingSeries = result["results"] as List;
@@ -92,7 +93,7 @@ class HttpReq {
 
   Future<SeriesDetailsModel> getSeriesDetails(int id) async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/tv/$id?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US");
+        "$apiEndPoint/tv/$id?api_key=$apiKey&language=en-US");
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {
@@ -111,7 +112,7 @@ class HttpReq {
 
   Future<List<SearchModel>> search(String query) async {
     var url = Uri.parse(
-        "https://api.themoviedb.org/3/search/multi?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US&query=$query&page=1&include_adult=true");
+        "$apiEndPoint/search/multi?api_key=$apiKey&language=en-US&query=$query&page=1&include_adult=true");
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
@@ -128,7 +129,7 @@ class HttpReq {
 
   Future<DetailsModel> getdetails(int id) async {
     var url =
-        "https://api.themoviedb.org/3/movie/$id?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US";
+        "$apiEndPoint/movie/$id?api_key=$apiKey&language=en-US";
     try {
       var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -165,7 +166,7 @@ class HttpReq {
   //getting the list of series episode each season per click
   Future<List<SeriesEpisodeModel>> getEpisodes(int id, int seasonNum) async {
     var url =
-        "https://api.themoviedb.org/3/tv/$id/season/$seasonNum?api_key=5d0cb31abcfc25b0cea56eeee270e412&language=en-US";
+        "$apiEndPoint/tv/$id/season/$seasonNum?api_key=$apiKey&language=en-US";
     try {
       var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

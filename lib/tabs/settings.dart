@@ -18,6 +18,7 @@ class _SettingsState extends State<Settings> {
     Color useColor = Provider.of<SettingsHandler>(context).mode.accentColor;
     String theme = Provider.of<SettingsHandler>(context).theme;
     final provide = Provider.of<SettingsHandler>(context);
+    Color background = provide.mode.background;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -61,110 +62,96 @@ class _SettingsState extends State<Settings> {
                   height: 1,
                   width: MediaQuery.of(context).size.width * 0.2,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Center(
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.3,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: const Color.fromARGB(255, 27, 27, 27),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Material(
-                                      color:
-                                          const Color.fromARGB(255, 27, 27, 27),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Default",
-                                              style: TextStyle(
-                                                  fontFamily: provide
-                                                      .mode.fontFamilyUse,
-                                                  color: const Color.fromARGB(
-                                                      255, 208, 208, 208),
-                                                  fontSize: 16)),
-                                          Radio(
-                                              value: "darkmode",
-                                              groupValue: theme,
-                                              onChanged: (String? value) {
-                                                provide.themeChange(value,settings);
-                                                Navigator.pop(context);
-                                              },
-                                              activeColor: useColor),
-                                        ],
-                                      ),
-                                    ),
-                                    Material(
-                                      color:
-                                          const Color.fromARGB(255, 27, 27, 27),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("White",
-                                              style: TextStyle(
-                                                  fontFamily: provide
-                                                      .mode.fontFamilyUse,
-                                                  color: const Color.fromARGB(
-                                                      255, 208, 208, 208),
-                                                  fontSize: 16)),
-                                          Radio(
-                                              value: "whitemode",
-                                              groupValue: theme,
-                                              onChanged: (String? value) {
-                                                provide.themeChange(value,settings);
-                                                Navigator.pop(context);
-                                              },
-                                              activeColor: useColor),
-                                        ],
-                                      ),
-                                    ),
-                                    Material(
-                                      color:
-                                          const Color.fromARGB(255, 27, 27, 27),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Retro",
-                                              style: TextStyle(
-                                                  fontFamily: provide
-                                                      .mode.fontFamilyUse,
-                                                  color: const Color.fromARGB(
-                                                      255, 208, 208, 208),
-                                                  fontSize: 16)),
-                                          Radio(
-                                              value: "retromode",
-                                              groupValue: theme,
-                                              onChanged: (String? value) {
-                                                provide.themeChange(value,settings);
-                                                Navigator.pop(context);
-                                              },
-                                              activeColor: useColor),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                PopupMenuButton<Widget>(
+                  position: PopupMenuPosition.values[1],
+                  color: background,
+                  tooltip: "themes",
+                  offset: Offset(MediaQuery.of(context).size.width*0.5, 0),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                        child: StatefulBuilder(builder: (context, setState) {
+                      return Column(
+                        children: [
+                          Material(
+                            color: provide.mode.background,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Default",
+                                    style: TextStyle(
+                                        fontFamily: provide.mode.fontFamilyUse,
+                                        color: provide.mode.fontColor,
+                                        fontSize: 16)),
+                                Radio(
+                                    value: "darkmode",
+                                    groupValue: theme,
+                                    onChanged: (String? value) {
+                                      provide.themeChange(value,settings);
+                                      setState(() {
+                                        useColor = provide.mode.accentColor;
+                                        theme = provide.theme;
+                                        background = provide.mode.background;
+                                      });
+                                    },
+                                    activeColor: useColor),
+                              ],
                             ),
-                          );
-                        });
-                  },
+                          ),
+                          Material(
+                            color: provide.mode.background,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("White",
+                                    style: TextStyle(
+                                        fontFamily: provide.mode.fontFamilyUse,
+                                        color: provide.mode.fontColor,
+                                        fontSize: 16)),
+                                Radio(
+                                    value: "whitemode",
+                                    groupValue: theme,
+                                    onChanged: (String? value) {
+                                      provide.themeChange(value,settings);
+                                      setState;
+                                      setState(() {
+                                        useColor = provide.mode.accentColor;
+                                        theme = provide.theme;
+                                        background = provide.mode.background;
+                                      });
+                                    },
+                                    activeColor: useColor),
+                              ],
+                            ),
+                          ),
+                          Material(
+                            color: provide.mode.background,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Retro",
+                                    style: TextStyle(
+                                        fontFamily: provide.mode.fontFamilyUse,
+                                        color: provide.mode.fontColor,
+                                        fontSize: 16)),
+                                Radio(
+                                    value: "retromode",
+                                    groupValue: theme,
+                                    onChanged: (String? value) {
+                                      provide.themeChange(value,settings);
+                                      setState(() {
+                                        useColor = provide.mode.accentColor;
+                                        theme = provide.theme;
+                                        background = provide.mode.background;
+                                      });
+                                    },
+                                    activeColor: useColor),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    }))
+                  ],
                   child: ListTile(
                       leading: Text("Theme",
                           style: TextStyle(
@@ -174,7 +161,7 @@ class _SettingsState extends State<Settings> {
                               fontWeight: FontWeight.w600)),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
-                        size: 15,
+                        size: 12,
                         color: provide.mode.fontColor,
                       )),
                 ),

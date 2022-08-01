@@ -14,7 +14,8 @@ class SettingsHandler extends ChangeNotifier {
       fontColor: Colors.white,
       accentColor: const Color(0xffFFF600),
       background: const Color(0xff303030),
-      fontFamilyUse: "whiteny");
+      fontFamilyUse: "whiteny",
+      addedColor: "black");
 
   //theme change function
   themeChange(Object? themeR, SharedPreferences? set) async {
@@ -25,31 +26,42 @@ class SettingsHandler extends ChangeNotifier {
             fontColor: Colors.white,
             accentColor: const Color(0xffFFF600),
             background: const Color(0xff303030),
+            addedColor: "black",
             fontFamilyUse: "whiteny");
+        notifyListeners();
         break;
       case "whitemode":
         mode = SettingsModel(
             fontColor: Colors.black,
             accentColor: Colors.purple,
             background: Colors.white,
+            addedColor: "white",
             fontFamilyUse: "whiteny");
+        notifyListeners();
         break;
       case "retromode":
         mode = SettingsModel(
             fontColor: Colors.white,
             accentColor: Colors.white,
             background: const Color(0xff303030),
+            addedColor: "black",
             fontFamilyUse: "stalinist");
+        notifyListeners();
         break;
     }
     theme = themeR.toString();
-    var sharedMode = SettingsModel(
-        fontColor: mode.fontColor,
-        accentColor: mode.accentColor,
-        background: mode.background,
-        fontFamilyUse: mode.fontFamilyUse);
-    var encode = json.encode(sharedMode);
-    await set.setString("settings", encode);
+    try {
+      var real = jsonEncode({
+        "fontColor": (mode.fontColor.value).toString(),
+        "accentColor": (mode.accentColor.value).toString(),
+        "background": (mode.background.value).toString(),
+        "addedColor": null,
+        "fontFamilyUse": mode.fontFamilyUse
+      });
+      await set.setString("settings", real);
+    } catch (e) {
+      print(e);
+    }
 
     notifyListeners();
   }
@@ -73,7 +85,7 @@ class SettingsHandler extends ChangeNotifier {
   }
 
   setThemeMode(SettingsModel theme) {
-    theme = mode;
+    mode = theme;
     notifyListeners();
   }
 }

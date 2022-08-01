@@ -29,6 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool openSearch = true;
   final TextEditingController _textController = TextEditingController();
   @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List category = ["Movies", "Series", "Watchlist"];
 
@@ -54,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             if (Provider.of<ConnectivityA>(context,
                                         listen: false)
                                     .isConnected ==
@@ -99,6 +106,52 @@ class _HomeScreenState extends State<HomeScreen> {
                                         horizontal: 8.0, vertical: 2),
                                     child: TextField(
                                         controller: _textController,
+                                        onSubmitted: (String owk) {
+                                          if (_textController
+                                              .value.text.isEmpty) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "Enter a text in the search bar")));
+                                          } else {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: ((context) =>
+                                                        MultiProvider(
+                                                          providers: [
+                                                            ChangeNotifierProvider<
+                                                                StateManager>(
+                                                              create: ((context) =>
+                                                                  StateManager()),
+                                                              child: Search(
+                                                                  theme:
+                                                                      themeMode,
+                                                                  query:
+                                                                      _textController
+                                                                          .text),
+                                                            ),
+                                                            ChangeNotifierProvider<
+                                                                SettingsHandler>(
+                                                              create: ((context) =>
+                                                                  SettingsHandler()),
+                                                              child: Search(
+                                                                  theme:
+                                                                      themeMode,
+                                                                  query:
+                                                                      _textController
+                                                                          .text),
+                                                            ),
+                                                          ],
+                                                          child: Search(
+                                                              theme: themeMode,
+                                                              query:
+                                                                  _textController
+                                                                      .text),
+                                                        ))));
+                                          }
+                                        },
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
@@ -116,6 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 content: Text(
                                                     "Enter a text in the search bar")));
                                       } else {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder: ((context) =>
@@ -169,7 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     "Category",
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                        fontSize: themeMode.fontFamilyUse == "stalinist" ? 24:32,
+                        fontSize:
+                            themeMode.fontFamilyUse == "stalinist" ? 24 : 32,
                         fontFamily: themeMode.fontFamilyUse,
                         fontWeight: FontWeight.w600,
                         color: themeMode.fontColor),
@@ -204,9 +260,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             category[index],
                             style: selectCat == index
                                 ? TextStyle(
-                                  fontFamily: themeMode.fontFamilyUse,
-                                    fontSize: themeMode.fontFamilyUse == "stalinist" ? 12:16, fontWeight: FontWeight.bold, color: Colors.black)
-                                :  TextStyle(
+                                    fontFamily: themeMode.fontFamilyUse,
+                                    fontSize:
+                                        themeMode.fontFamilyUse == "stalinist"
+                                            ? 12
+                                            : 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)
+                                : TextStyle(
                                     color: themeMode.fontColor,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold),
@@ -235,8 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             } else {
               return Icon(Icons.wifi_off,
-                  color: themeMode.accentColor,
-                  size: 70);
+                  color: themeMode.accentColor, size: 70);
             }
           }),
         ]));

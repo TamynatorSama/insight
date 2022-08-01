@@ -25,9 +25,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     initialize();
-    Timer.periodic(
+    super.initState();
+  }
+
+  initialize() async {
+    set = await SharedPreferences.getInstance();
+    Future.delayed(
         const Duration(seconds: 2),
-        (timer) => {
+        () => {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -53,18 +58,28 @@ class _SplashScreenState extends State<SplashScreen> {
                               // child: const SplashScreen(),
                               child: const MyHomePage())))
             });
-    super.initState();
-  }
+    SettingsModel helpMode;
+    if (set!.getString("settings") == null) {
+      helpMode = SettingsModel(
+          fontColor: Colors.white,
+          accentColor: const Color(0xffFFF600),
+          background: const Color(0xff303030),
+          fontFamilyUse: "whiteny");
+          // ignore: use_build_context_synchronously
+          Provider.of<SettingsHandler>(context, listen: false).setThemeMode(helpMode);
+    } else {
+      var help = jsonDecode(set!.getString("settings")!);
 
-  initialize() async {
-    set = await SharedPreferences.getInstance();
-    print(set!.get("settings"));
-    // var theme = set!.get("settings");
-    // var themeMode = jsonDecode(set!.getString("settings")!);
+      helpMode = SettingsModel(
+          fontColor: Color(int.parse(help["fontColor"])),
+          accentColor: Color(int.parse(help["accentColor"])),
+          background: Color(int.parse(help["background"])),
+          fontFamilyUse: help["fontFamilyUse"]);
+          // ignore: use_build_context_synchronously
+          Provider.of<SettingsHandler>(context, listen: false).setThemeMode(helpMode);
+    }
 
-    var theme = SettingsModel.fromJson(jsonDecode(set!.get("settings").toString()));
-    // ignore: use_build_context_synchronously
-    Provider.of<SettingsHandler>(context, listen: false).setThemeMode(theme);
+    // var theme = SettingsModel.fromJson(themeMode);
   }
 
   @override
